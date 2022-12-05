@@ -141,7 +141,7 @@ namespace IMS.BE.Services.Masters
                 .Where(Q => Q.GudangCode.ToLower() == tolowerGudangCode)
                 .FirstOrDefaultAsync();
 
-            updateBarang!.Name = update.Name;
+            updateBarang!.Name = update.Name.ToUpper();
             updateBarang.UpdatedAt = datetimeOffset;
             updateBarang.UpdatedBy = userLogin;
 

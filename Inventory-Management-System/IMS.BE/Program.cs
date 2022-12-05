@@ -35,6 +35,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<UserIdentityService>();
 builder.Services.AddTransient<BarangService>();
 builder.Services.AddTransient<GudangService>();
+builder.Services.AddTransient<CategoryService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

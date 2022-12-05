@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IMS.BE.Services.Masters
 {
-    public class BarangService
+    public class CategoryService
     {
         private readonly IMSDBContext db;
         private readonly UserIdentityService userIdentityService;
 
-        public BarangService(IMSDBContext db, UserIdentityService userIdentityService)
+        public CategoryService(IMSDBContext iMSDBContext, UserIdentityService userIdentityService)
         {
-            this.db = db;
+            this.db = iMSDBContext;
             this.userIdentityService = userIdentityService;
         }
 
@@ -21,15 +21,15 @@ namespace IMS.BE.Services.Masters
         /// </summary>
         /// <param name="skuId"></param>
         /// <returns></returns>
-        public async Task<UpdateBarang> GetSelectedBarangAsync(string skuId)
+        public async Task<UpdateKategori> GetSelectedKategoriAsync(string categoryId)
         {
-            var toLowerSkuId = skuId.ToLower();
+            var toLowerCategoryId = categoryId.ToLower();
 
-            var selectedBarang = await this.db.MasterBarangs
-                .Where(Q => Q.SKUID.ToLower() == toLowerSkuId)
-                .Select(Q => new UpdateBarang
+            var selectedBarang = await this.db.MasterKategoris
+                .Where(Q => Q.KategoriCode.ToLower() == toLowerCategoryId)
+                .Select(Q => new UpdateKategori
                 {
-                    SkuId = Q.SKUID,
+                    CategoryId = Q.KategoriCode,
                     Name = Q.Name
                 }).FirstOrDefaultAsync();
 
@@ -42,7 +42,7 @@ namespace IMS.BE.Services.Masters
         /// <param name="param"></param>
         /// <param name="currentPage"></param>
         /// <returns></returns>
-        public async Task<PaginatedList<CreateBarang>> GetBarangAsync(string? param, int? currentPage)
+        public async Task<PaginatedList<CreateKategori>> GetCategoryAsync(string? param, int? currentPage)
         {
             var tolowerParam = param?.ToLower();
 
@@ -51,22 +51,22 @@ namespace IMS.BE.Services.Masters
                 currentPage = 1;
             }
 
-            var query = from mb in this.db.MasterBarangs
+            var query = from mb in this.db.MasterKategoris
                         where
                                // If null, don't check the condition
-                               tolowerParam == null || tolowerParam.Contains(mb.SKUID.ToLower())
+                               tolowerParam == null || tolowerParam.Contains(mb.KategoriCode.ToLower())
                                ||
                                tolowerParam.Contains(mb.Name.ToLower())
                         orderby mb.UpdatedAt descending
-                        select new CreateBarang
+                        select new CreateKategori
                         {
-                            SkuId = mb.SKUID,
+                            CategoryId = mb.KategoriCode,
                             Name = mb.Name
                         };
 
             var pageSize = 10;
 
-            var requests = await PaginatedList<CreateBarang>.CreateAsync(query, currentPage.Value, pageSize);
+            var requests = await PaginatedList<CreateKategori>.CreateAsync(query, currentPage.Value, pageSize);
 
             return requests;
         }
@@ -76,15 +76,15 @@ namespace IMS.BE.Services.Masters
         /// </summary>
         /// <param name="insert"></param>
         /// <returns></returns>
-        public async Task InsertAsync(CreateBarang insert)
+        public async Task InsertAsync(CreateKategori insert)
         {
             var userLogin = userIdentityService.UserCode ?? "SYSTEM";
 
             var datetimeOffset = DateTimeOffset.UtcNow;
 
-            this.db.MasterBarangs.Add(new MasterBarang
+            this.db.MasterKategoris.Add(new MasterKategori
             {
-                SKUID = insert.SkuId.ToUpper(),
+                KategoriCode = insert.CategoryId.ToUpper(),
                 Name = insert.Name.ToUpper(),
                 CreatedAt = datetimeOffset,
                 UpdatedAt = datetimeOffset,
@@ -101,16 +101,16 @@ namespace IMS.BE.Services.Masters
         /// <param name="update"></param>
         /// <param name="skuId"></param>
         /// <returns></returns>
-        public async Task UpdateAsync(UpdateBarang update, string skuId)
+        public async Task UpdateAsync(UpdateKategori update, string categoryId)
         {
-            var tolowerSkuId = skuId.ToLower();
+            var tolowerCategoryId = categoryId.ToLower();
 
             var userLogin = userIdentityService.UserCode ?? "SYSTEM";
 
             var datetimeOffset = DateTimeOffset.UtcNow;
 
-            var updateBarang = await this.db.MasterBarangs
-                .Where(Q => Q.SKUID.ToLower() == tolowerSkuId)
+            var updateBarang = await this.db.MasterKategoris
+                .Where(Q => Q.KategoriCode.ToLower() == tolowerCategoryId)
                 .FirstOrDefaultAsync();
 
             updateBarang!.Name = update.Name.ToUpper();
@@ -120,16 +120,16 @@ namespace IMS.BE.Services.Masters
             await this.db.SaveChangesAsync();
         }
 
-        public async Task<(bool, string)> DeleteAsync(string skuId)
+        public async Task<(bool, string)> DeleteAsync(string categoryId)
         {
-            var tolowerSkuId = skuId.ToLower();
+            var tolowerCategoryId = categoryId.ToLower();
 
             try
             {
-                var deleteData = await this.db.MasterBarangs
-                    .FirstOrDefaultAsync(Q => Q.SKUID.ToLower() == tolowerSkuId);
+                var deleteData = await this.db.MasterKategoris
+                    .FirstOrDefaultAsync(Q => Q.KategoriCode.ToLower() == tolowerCategoryId);
 
-                this.db.MasterBarangs.Remove(deleteData);
+                this.db.MasterKategoris.Remove(deleteData);
                 await this.db.SaveChangesAsync();
                 return (true, string.Empty);
             }
@@ -144,29 +144,12 @@ namespace IMS.BE.Services.Masters
         /// </summary>
         /// <param name="skuCode"></param>
         /// <returns></returns>
-        public async Task<bool> IsSKUCodeExists(string skuCode)
+        public async Task<bool> IsKategoriCodeExists(string kategoriCode)
         {
-            var tolowerSkuCode = skuCode.ToLower();
+            var tolowerCategoryCode = kategoriCode.ToLower();
 
-            var isExists = await this.db.MasterBarangs
-                .AnyAsync(Q => Q.SKUID.ToLower() == tolowerSkuCode);
-
-            return isExists;
-        }
-
-        /// <summary>
-        /// Check Update Name exists
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public async Task<bool> IsUpdateNameExist(string name, string id)
-        {
-            var tolowerName = name.ToLower();
-            var tolowerSkuId = id.ToLower();
-
-            var isExists = await this.db.MasterBarangs
-               .AnyAsync(Q => Q.Name.ToLower() == tolowerName && Q.SKUID != tolowerSkuId);
+            var isExists = await this.db.MasterKategoris
+                .AnyAsync(Q => Q.KategoriCode.ToLower() == tolowerCategoryCode);
 
             return isExists;
         }
@@ -180,8 +163,25 @@ namespace IMS.BE.Services.Masters
         {
             var tolowerName = name.ToLower();
 
-            var isExists = await this.db.MasterBarangs
+            var isExists = await this.db.MasterKategoris
                 .AnyAsync(Q => Q.Name.ToLower() == tolowerName);
+
+            return isExists;
+        }
+
+        /// <summary>
+        /// Check Update Name exists
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<bool> IsUpdateNameExist(string name, string id)
+        {
+            var tolowerName = name.ToLower();
+            var tolowerCategoryId = id.ToLower();
+
+            var isExists = await this.db.MasterKategoris
+               .AnyAsync(Q => Q.Name.ToLower() == tolowerName && Q.KategoriCode != tolowerCategoryId);
 
             return isExists;
         }
