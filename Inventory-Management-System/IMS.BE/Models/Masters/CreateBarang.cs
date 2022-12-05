@@ -11,5 +11,7 @@ namespace IMS.BE.Models.Masters
         [Required]
         [Display(Name = "Name", Prompt = "Nama")]
         public string Name { get; set; } = string.Empty;
+        [Required]
+        public string Kategori { get; set; } = string.Empty;
     }
 }

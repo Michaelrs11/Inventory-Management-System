@@ -31,6 +31,15 @@
                     </div>
                     <div class="form-row">
                         <div class="col-sm-6">
+                            <label class="form-label" asp-for="BarangModel.Kategori">Kategori</label>
+                            <select class="form-select" asp-for="BarangModel.Kategori" asp-items="Model.OutletCodeDropdown">
+                                <option value="">--Select Kategori--</option>
+                            </select>
+                            <span asp-validation-for="BarangModel.Kategori" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-sm-6">
                             <label for="status">Name</label>
                             <input type="text" class="form-control" asp-for="BarangModel.Name" />
                             <span asp-validation-for="BarangModel.Name" class="text-danger"></span>

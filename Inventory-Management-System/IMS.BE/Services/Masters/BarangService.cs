@@ -1,6 +1,7 @@
 ﻿using IMS.BE.Commons.Services;
 using IMS.BE.Models.Masters;
 using IMS.Entities;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace IMS.BE.Services.Masters
@@ -30,10 +31,28 @@ namespace IMS.BE.Services.Masters
                 .Select(Q => new UpdateBarang
                 {
                     SkuId = Q.SKUID,
-                    Name = Q.Name
+                    Name = Q.Name,
+                    Kategori = Q.KategoriCodeNavigation.Name
                 }).FirstOrDefaultAsync();
 
             return selectedBarang;
+        }
+
+        /// <summary>
+        /// Get Outlet Dropdown
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<SelectListItem>> GetDropdownAsync()
+        {
+            var dropdowns = await this.db.MasterKategoris
+                 .Select(Q => new SelectListItem
+                 {
+                     Value = Q.KategoriCode.ToString(),
+                     Text = Q.Name
+                 })
+                 .ToListAsync();
+
+            return dropdowns;
         }
 
         /// <summary>
@@ -61,7 +80,8 @@ namespace IMS.BE.Services.Masters
                         select new CreateBarang
                         {
                             SkuId = mb.SKUID,
-                            Name = mb.Name
+                            Name = mb.Name,
+                            Kategori = mb.KategoriCodeNavigation.Name
                         };
 
             var pageSize = 10;
@@ -86,6 +106,7 @@ namespace IMS.BE.Services.Masters
             {
                 SKUID = insert.SkuId.ToUpper(),
                 Name = insert.Name.ToUpper(),
+                KategoriCode = insert.Kategori.ToUpper(),
                 CreatedAt = datetimeOffset,
                 UpdatedAt = datetimeOffset,
                 CreatedBy = userLogin,

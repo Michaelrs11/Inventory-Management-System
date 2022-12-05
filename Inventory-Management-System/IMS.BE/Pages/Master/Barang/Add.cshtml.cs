@@ -3,6 +3,7 @@ using IMS.BE.Services.Masters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace IMS.BE.Pages.Master
 {
@@ -21,9 +22,11 @@ namespace IMS.BE.Pages.Master
 
         [TempData]
         public string ErrorMessage { get; set; }
+        public List<SelectListItem> OutletCodeDropdown { get; set; }
 
-        public void OnGet()
+        public async Task OnGet()
         {
+            this.OutletCodeDropdown = await this.barangService.GetDropdownAsync();
         }
 
         public async Task<IActionResult> OnPostAsync()

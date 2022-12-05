@@ -3,6 +3,7 @@ using IMS.BE.Services.Masters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace IMS.BE.Pages.Master
 {
@@ -16,6 +17,8 @@ namespace IMS.BE.Pages.Master
 
         public string ErrorMessage { get; set; } = string.Empty;
 
+        public List<SelectListItem> OutletCodeDropdown { get; set; }
+
         public EditModel(BarangService barangService)
         {
             this.barangService = barangService;
@@ -23,6 +26,7 @@ namespace IMS.BE.Pages.Master
 
         public async Task<IActionResult> OnGet(string id)
         {
+            this.OutletCodeDropdown = await this.barangService.GetDropdownAsync();
             BarangModel = await this.barangService.GetSelectedBarangAsync(id);
             return Page();
         }

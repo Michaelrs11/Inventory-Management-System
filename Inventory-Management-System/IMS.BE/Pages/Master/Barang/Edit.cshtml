@@ -29,6 +29,13 @@
                     </div>
                     <div class="form-row">
                         <div class="col-sm-6">
+                            <label>Kategori</label>
+                            <input type="text" class="form-control" asp-for="BarangModel.Kategori" disabled />
+                            <span asp-validation-for="BarangModel.Kategori" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-sm-6">
                             <label for="status">Name</label>
                             <input type="text" class="form-control" asp-for="BarangModel.Name" />
                             <span asp-validation-for="BarangModel.Name" class="text-danger"></span>

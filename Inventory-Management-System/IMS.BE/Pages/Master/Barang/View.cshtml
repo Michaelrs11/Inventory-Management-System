@@ -48,6 +48,7 @@
                         <th>No</th>
                         <th>SKU Code</th>
                         <th>Name</th>
+                        <th>Kategori</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -58,6 +59,7 @@
                             <td>@ctr</td>
                             <td>@item.SkuId</td>
                             <td>@item.Name</td>
+                            <td>@item.Kategori</td>
                             <td>
                                 <a asp-page="/Master/Barang/Edit"
                                asp-route-id="@item.SkuId"

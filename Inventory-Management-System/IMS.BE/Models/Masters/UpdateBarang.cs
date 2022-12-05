@@ -9,5 +9,6 @@ namespace IMS.BE.Models.Masters
         [Display(Name = "Name", Prompt = "Nama")]
         public string Name { get; set; } = string.Empty;
         public string SkuId { get; set; } = string.Empty;
+        public string Kategori { get; set; } = string.Empty;
     }
 }
