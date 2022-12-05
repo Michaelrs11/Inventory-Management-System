@@ -16,7 +16,9 @@ namespace IMS.Entities
         public string CreatedBy { get; set; } = null!;
         public DateTimeOffset UpdatedAt { get; set; }
         public string UpdatedBy { get; set; } = null!;
+        public string? KategoriCode { get; set; }
 
+        public virtual MasterKategori? KategoriCodeNavigation { get; set; }
         public virtual ICollection<StockTransaction> StockTransactions { get; set; }
     }
 }

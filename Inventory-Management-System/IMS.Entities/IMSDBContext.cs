@@ -14,6 +14,7 @@ namespace IMS.Entities
 
         public virtual DbSet<MasterBarang> MasterBarangs { get; set; } = null!;
         public virtual DbSet<MasterGudang> MasterGudangs { get; set; } = null!;
+        public virtual DbSet<MasterKategori> MasterKategoris { get; set; } = null!;
         public virtual DbSet<MasterUser> MasterUsers { get; set; } = null!;
         public virtual DbSet<Outlet> Outlets { get; set; } = null!;
         public virtual DbSet<StockTransaction> StockTransactions { get; set; } = null!;
@@ -46,6 +47,10 @@ namespace IMS.Entities
                     .IsUnicode(false)
                     .HasDefaultValueSql("('SYSTEM')");
 
+                entity.Property(e => e.KategoriCode)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Name)
                     .HasMaxLength(255)
                     .IsUnicode(false);
@@ -56,6 +61,11 @@ namespace IMS.Entities
                     .HasMaxLength(255)
                     .IsUnicode(false)
                     .HasDefaultValueSql("('SYSTEM')");
+
+                entity.HasOne(d => d.KategoriCodeNavigation)
+                    .WithMany(p => p.MasterBarangs)
+                    .HasForeignKey(d => d.KategoriCode)
+                    .HasConstraintName("FK_MasterBarang_MasterKategori");
             });
 
             modelBuilder.Entity<MasterGudang>(entity =>
@@ -96,6 +106,35 @@ namespace IMS.Entities
                     .HasForeignKey(d => d.OutletCode)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_MasterGudang_Outlet");
+            });
+
+            modelBuilder.Entity<MasterKategori>(entity =>
+            {
+                entity.HasKey(e => e.KategoriCode);
+
+                entity.ToTable("MasterKategori");
+
+                entity.Property(e => e.KategoriCode)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("('SYSTEM')");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+
+                entity.Property(e => e.UpdatedBy)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("('SYSTEM')");
             });
 
             modelBuilder.Entity<MasterUser>(entity =>

@@ -4,3 +4,4 @@ MasterGudang
 UserRoleEnum
 MasterUser
 StockTransaction
+MasterKategori
