@@ -6,9 +6,8 @@ namespace IMS.BE.Models
     public class Login
     {
         [Required]
-        [DataType(DataType.EmailAddress)]
-        [Display(Name = "Email", Prompt = "Email")]
-        public string Email { get; set; } = string.Empty;
+        [Display(Name = "Username", Prompt = "Username")]
+        public string Username { get; set; } = string.Empty;
         [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Passwrod", Prompt = "Password")]

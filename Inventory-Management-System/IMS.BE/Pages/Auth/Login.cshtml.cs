@@ -34,9 +34,9 @@ namespace IMS.BE.Pages
 
         public async Task<IActionResult> OnPostAsync(string? returnUrl)
         {
-            if (LoginForm.Email != null && LoginForm.Password != null)
+            if (LoginForm.Username != null && LoginForm.Password != null)
             {
-                var claimsPrincipal = await loginService.Login(Clients.WebApp, LoginForm.Email, LoginForm.Password);
+                var claimsPrincipal = await loginService.Login(Clients.WebApp, LoginForm.Username, LoginForm.Password);
 
                 if (claimsPrincipal == null)
                 {
@@ -47,7 +47,7 @@ namespace IMS.BE.Pages
 
                 await HttpContext.SignInAsync(Clients.WebApp, claimsPrincipal);
 
-                if (string.IsNullOrEmpty(returnUrl) == false)
+                if (!string.IsNullOrEmpty(returnUrl))
                 {
                     if (Url.IsLocalUrl(returnUrl))
                     {
@@ -58,7 +58,7 @@ namespace IMS.BE.Pages
                 ErrorMessage = string.Empty;
 
                 return Redirect("/Index");
-            }
+            } 
 
             return Page();
         }

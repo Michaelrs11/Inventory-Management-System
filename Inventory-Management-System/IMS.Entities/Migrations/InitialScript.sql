@@ -56,9 +56,13 @@ CREATE TABLE MasterUser
 )
 
 CREATE TABLE StockTransaction(
-	StockTransactionId INT PRIMARY KEY IDENTITY,
-	SKUID VARCHAR(255) NOT NULL
+	 StockTransactionId INT PRIMARY KEY IDENTITY,
+	 SKUID VARCHAR(255) NOT NULL
 		CONSTRAINT FK_AdjustmentStock_MasterBarang FOREIGN KEY REFERENCES MasterBarang,
+     GudangCode VARCHAR(255) NOT NULL
+	    CONSTRAINT FK_StockTransaction_MasterGudang FOREIGN KEY REFERENCES MasterGudang,
+     StockBefore INT NOT NULL,
+     StockAfter INT NOT NULL,
 	 StockIn INT,
 	 StockOut INT,
 	 CreatedAt DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(),

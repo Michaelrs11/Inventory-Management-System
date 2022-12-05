@@ -182,6 +182,10 @@ namespace IMS.Entities
                     .IsUnicode(false)
                     .HasDefaultValueSql("('SYSTEM')");
 
+                entity.Property(e => e.GudangCode)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.SKUID)
                     .HasMaxLength(255)
                     .IsUnicode(false);
@@ -192,6 +196,12 @@ namespace IMS.Entities
                     .HasMaxLength(255)
                     .IsUnicode(false)
                     .HasDefaultValueSql("('SYSTEM')");
+
+                entity.HasOne(d => d.GudangCodeNavigation)
+                    .WithMany(p => p.StockTransactions)
+                    .HasForeignKey(d => d.GudangCode)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_StockTransaction_MasterGudang");
 
                 entity.HasOne(d => d.SKU)
                     .WithMany(p => p.StockTransactions)

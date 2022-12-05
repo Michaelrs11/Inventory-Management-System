@@ -13,9 +13,9 @@ namespace IMS.BE.Services
             this.db = db;
         }
 
-        public async Task<ClaimsPrincipal> Login(string authScheme, string email, string password)
+        public async Task<ClaimsPrincipal> Login(string authScheme, string userCode, string password)
         {
-            var user = await this.GetUserAsync(email);
+            var user = await this.GetUserAsync(userCode);
 
             if (user == null)
             {
@@ -47,12 +47,12 @@ namespace IMS.BE.Services
             return isPasswordValid;
         }
 
-        public async Task<MasterUser> GetUserAsync(string email)
+        public async Task<MasterUser> GetUserAsync(string userCode)
         {
-            var tolowerEmail = email.ToLower();
+            var tolowerUserCode = userCode.ToLower();
 
             var user = await this.db.MasterUsers
-                .Where(Q => Q.Email.ToLower() == tolowerEmail)
+                .Where(Q => Q.UserCode.ToLower() == tolowerUserCode)
                 .FirstOrDefaultAsync();
 
             return user;
