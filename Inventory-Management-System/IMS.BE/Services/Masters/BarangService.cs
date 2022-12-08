@@ -39,23 +39,6 @@ namespace IMS.BE.Services.Masters
         }
 
         /// <summary>
-        /// Get Outlet Dropdown
-        /// </summary>
-        /// <returns></returns>
-        public async Task<List<SelectListItem>> GetDropdownAsync()
-        {
-            var dropdowns = await this.db.MasterKategoris
-                 .Select(Q => new SelectListItem
-                 {
-                     Value = Q.KategoriCode.ToString(),
-                     Text = Q.Name
-                 })
-                 .ToListAsync();
-
-            return dropdowns;
-        }
-
-        /// <summary>
         /// Get List barang
         /// </summary>
         /// <param name="param"></param>

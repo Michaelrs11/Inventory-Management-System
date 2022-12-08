@@ -41,23 +41,6 @@ namespace IMS.BE.Services.Masters
         }
 
         /// <summary>
-        /// Get Outlet Dropdown
-        /// </summary>
-        /// <returns></returns>
-        public async Task<List<SelectListItem>> GetDropdownAsync()
-        {
-            var dropdowns = await this.db.Outlets
-                 .Select(Q => new SelectListItem
-                 {
-                     Value = Q.OutletCode.ToString(),
-                     Text = Q.Name
-                 })
-                 .ToListAsync();
-
-            return dropdowns;
-        }
-
-        /// <summary>
         /// Get List Gudang
         /// </summary>
         /// <param name="param"></param>

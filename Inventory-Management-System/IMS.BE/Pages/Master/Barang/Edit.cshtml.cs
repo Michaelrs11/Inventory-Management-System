@@ -1,3 +1,4 @@
+using IMS.BE.Commons.Services;
 using IMS.BE.Models.Masters;
 using IMS.BE.Services.Masters;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +12,7 @@ namespace IMS.BE.Pages.Master
     public class EditModel : PageModel
     {
         private readonly BarangService barangService;
+        private readonly DropdownService dropdown;
 
         [BindProperty]
         public UpdateBarang BarangModel { get; set; }
@@ -19,14 +21,15 @@ namespace IMS.BE.Pages.Master
 
         public List<SelectListItem> OutletCodeDropdown { get; set; }
 
-        public EditModel(BarangService barangService)
+        public EditModel(BarangService barangService, DropdownService dropdown)
         {
             this.barangService = barangService;
+            this.dropdown = dropdown;
         }
 
         public async Task<IActionResult> OnGet(string id)
         {
-            this.OutletCodeDropdown = await this.barangService.GetDropdownAsync();
+            this.OutletCodeDropdown = await this.dropdown.GetOutletDropdownAsync();
             BarangModel = await this.barangService.GetSelectedBarangAsync(id);
             return Page();
         }

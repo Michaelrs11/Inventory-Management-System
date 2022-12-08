@@ -1,3 +1,4 @@
+using IMS.BE.Commons.Services;
 using IMS.BE.Models.Masters;
 using IMS.BE.Services.Masters;
 using Microsoft.AspNetCore.Authorization;
@@ -11,10 +12,12 @@ namespace IMS.BE.Pages.Master
     public class AddModel : PageModel
     {
         private readonly BarangService barangService;
+        private readonly DropdownService dropdown;
 
-        public AddModel(BarangService barangService)
+        public AddModel(BarangService barangService, DropdownService dropdown)
         {
             this.barangService = barangService;
+            this.dropdown = dropdown;
         }
 
         [BindProperty]
@@ -26,7 +29,7 @@ namespace IMS.BE.Pages.Master
 
         public async Task OnGet()
         {
-            this.OutletCodeDropdown = await this.barangService.GetDropdownAsync();
+            this.OutletCodeDropdown = await this.dropdown.GetOutletDropdownAsync();
         }
 
         public async Task<IActionResult> OnPostAsync()

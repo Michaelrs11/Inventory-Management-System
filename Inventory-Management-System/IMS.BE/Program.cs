@@ -1,6 +1,8 @@
 using IMS.BE.Commons.Constants;
+using IMS.BE.Commons.Services;
 using IMS.BE.Services;
 using IMS.BE.Services.Masters;
+using IMS.BE.Services.Transactions;
 using IMS.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +38,8 @@ builder.Services.AddTransient<UserIdentityService>();
 builder.Services.AddTransient<BarangService>();
 builder.Services.AddTransient<GudangService>();
 builder.Services.AddTransient<CategoryService>();
+builder.Services.AddTransient<InOutBoundService>();
+builder.Services.AddTransient<DropdownService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

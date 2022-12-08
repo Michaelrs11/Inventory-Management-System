@@ -1,3 +1,4 @@
+using IMS.BE.Commons.Services;
 using IMS.BE.Models.Masters;
 using IMS.BE.Services.Masters;
 using Microsoft.AspNetCore.Authorization;
@@ -11,10 +12,12 @@ namespace IMS.BE.Pages.Master.Gudang
     public class AddModel : PageModel
     {
         private readonly GudangService gudangService;
+        private readonly DropdownService dropdown;
 
-        public AddModel(GudangService gudangService)
+        public AddModel(GudangService gudangService, DropdownService dropdown)
         {
             this.gudangService = gudangService;
+            this.dropdown = dropdown;
         }
 
         [BindProperty]
@@ -27,7 +30,7 @@ namespace IMS.BE.Pages.Master.Gudang
 
         public async Task OnGet()
         {
-            this.OutletCodeDropdown = await this.gudangService.GetDropdownAsync();
+            this.OutletCodeDropdown = await this.dropdown.GetOutletDropdownAsync();
         }
 
         public async Task<IActionResult> OnPostAsync()
