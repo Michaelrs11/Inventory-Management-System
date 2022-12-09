@@ -13,6 +13,15 @@ namespace IMS.BE.Commons.Services
             this.db = db;
         }
 
+        public async Task<Dictionary<string, string>> GetGudangDict()
+        {
+            var masterGudangs = await db.MasterGudangs
+                .AsNoTracking()
+                .ToDictionaryAsync(Q => Q.GudangCode, Q => Q.Name);
+
+            return masterGudangs;
+        }
+
         /// <summary>
         /// Get Outlet Dropdown
         /// </summary>
