@@ -40,6 +40,7 @@ builder.Services.AddTransient<GudangService>();
 builder.Services.AddTransient<CategoryService>();
 builder.Services.AddTransient<InOutBoundService>();
 builder.Services.AddTransient<DropdownService>();
+builder.Services.AddTransient<RekapTransactionService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

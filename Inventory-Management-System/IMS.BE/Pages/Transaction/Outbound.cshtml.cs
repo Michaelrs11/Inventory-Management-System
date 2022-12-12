@@ -38,8 +38,18 @@ namespace IMS.BE.Pages.Transaction
         {
             if (ModelState.IsValid)
             {
-                await this.service.InsertOutbound(OutboundData);
-                return RedirectToPage("/Index");
+                var isSuccess = await this.service.InsertOutbound(OutboundData);
+
+                if (isSuccess)
+                {
+                    ErrorMessage = string.Empty;
+                    return RedirectToPage("/Index");
+                }
+                else
+                {
+                    ErrorMessage = "Barang tersebut belum pernah dilakukan inbound";
+                    return Page();
+                }
             }
 
             return Page();

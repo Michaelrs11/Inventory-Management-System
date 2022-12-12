@@ -1,12 +1,12 @@
 ﻿@page
-@model IMS.BE.Pages.Transaction.ViewOutboundModel
+@model IMS.BE.Pages.Transaction.RekapModel
 @{
     int ctr = 1;
-    ViewData["Title"] = "View Outbound";
+    ViewData["Title"] = "Rekap";
 }
 <div class="row">
     <div class="col-md-12">
-        <h2>View Outbound</h2>
+        <h2>Rekap</h2>
     </div>
 </div>
 <hr />
@@ -75,7 +75,7 @@
                         <th>No</th>
                         <th>Sku Code</th>
                         <th>Sku Name</th>
-                        <th>Stock Out</th>
+                        <th>Stock</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -85,7 +85,7 @@
                             <td>@ctr</td>
                             <td>@item.SkuId</td>
                             <td>@item.Name</td>
-                            <td>@item.StockOut</td>
+                            <td>@item.Stock</td>
                         </tr>
                         ctr++;
                     }

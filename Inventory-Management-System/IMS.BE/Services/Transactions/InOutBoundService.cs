@@ -16,6 +16,8 @@ namespace IMS.BE.Services.Transactions
             this.db = db;
             this.userIdentity = userIdentity;
         }
+        
+        
 
         /// <summary>
         /// Insert Stock
@@ -44,6 +46,7 @@ namespace IMS.BE.Services.Transactions
                     GudangCode = insert.GudangCode.ToUpper(),
                     StockBefore = 0,
                     StockIn = insert.StockIn,
+                    StockOut = 0,
                     StockAfter = 0 + insert.StockIn,
                     CreatedAt = datetimeOffset,
                     CreatedBy = userLogin,
@@ -59,6 +62,7 @@ namespace IMS.BE.Services.Transactions
                     GudangCode = insert.GudangCode.ToUpper(),
                     StockBefore = getStockByCode.StockAfter,
                     StockIn = insert.StockIn,
+                    StockOut = 0,
                     StockAfter = getStockByCode.StockAfter + insert.StockIn,
                     CreatedAt = datetimeOffset,
                     CreatedBy = userLogin,
@@ -76,20 +80,21 @@ namespace IMS.BE.Services.Transactions
             _ = nameof(StockTransaction.SKUID);
             _ = nameof(StockTransaction.GudangCode);
             _ = nameof(StockTransaction.StockIn);
+            _ = nameof(StockTransaction.StockOut);
             _ = nameof(MasterBarang.Name);
 
             if (isInbound)
             {
                 return @"SELECT
 	                    st.SKUID AS [SkuId], 
-	                    mb.Name AS [GudangCode],
+	                    mb.Name AS [Name],
 	                    SUM(CAST(st.StockIn AS NUMERIC)) AS [StockIn]
                     FROM StockTransaction st
                     JOIN MasterBarang mb ON st.SKUID = mb.SKUID";
             }
             return @"SELECT
 	                    st.SKUID AS [SkuId], 
-	                    mb.Name AS [GudangCode],
+	                    mb.Name AS [Name],
 	                    SUM(CAST(st.StockOut AS NUMERIC)) AS [StockOut]
                     FROM StockTransaction st
                     JOIN MasterBarang mb ON st.SKUID = mb.SKUID";
@@ -174,7 +179,7 @@ namespace IMS.BE.Services.Transactions
         /// </summary>
         /// <param name="insert"></param>
         /// <returns></returns>
-        public async Task InsertOutbound(OutbondTransaction insert)
+        public async Task<bool> InsertOutbound(OutbondTransaction insert)
         {
             var tolowerSkuCode = insert.SkuCode.ToLower();
 
@@ -190,26 +195,21 @@ namespace IMS.BE.Services.Transactions
 
             if (getStockByCode == null)
             {
-                this.db.StockTransactions.Add(new StockTransaction
-                {
-                    SKUID = insert.SkuCode.ToUpper(),
-                    GudangCode = insert.GudangCode.ToUpper(),
-                    StockBefore = 0,
-                    StockOut = insert.StockOut,
-                    StockAfter = 0 - insert.StockOut,
-                    CreatedAt = datetimeOffset,
-                    CreatedBy = userLogin,
-                    UpdatedAt = datetimeOffset,
-                    UpdatedBy = userLogin
-                });
+                return false;
             }
             else
             {
+                if (getStockByCode.StockAfter < insert.StockOut)
+                {
+                    return false;
+                }
+
                 this.db.StockTransactions.Add(new StockTransaction
                 {
                     SKUID = insert.SkuCode.ToUpper(),
                     GudangCode = insert.GudangCode.ToUpper(),
                     StockBefore = getStockByCode.StockAfter,
+                    StockIn = 0,
                     StockOut = insert.StockOut,
                     StockAfter = getStockByCode.StockAfter - insert.StockOut,
                     CreatedAt = datetimeOffset,
@@ -219,6 +219,7 @@ namespace IMS.BE.Services.Transactions
                 });
             }
             await db.SaveChangesAsync();
+            return true;
         }
     }
 }
