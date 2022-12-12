@@ -1,7 +1,10 @@
 ﻿using Dapper;
+using IMS.BE.Commons.Services;
+using IMS.BE.Models.Masters;
 using IMS.BE.Models.Transactions;
 using IMS.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing.Printing;
 using System.Text;
 
 namespace IMS.BE.Services.Transactions
@@ -127,51 +130,92 @@ namespace IMS.BE.Services.Transactions
 
         public string GenerateGroupbyQuery()
         {
-            var groupbyQuery = "GROUP BY st.SKUID, mb.Name";
+            var groupbyQuery = "GROUP BY st.SKUID, mb.Name ";
 
             return groupbyQuery;
         }
 
-        public async Task<List<ViewInbound>> GetInboundTransaction(string? gudangCode, DateTime? dateFrom,
-            DateTime? dateTo)
+        public StringBuilder GenerateOrderQuery(int? currentPage, StringBuilder query)
         {
+            query.Append("ORDER BY st.SKUID ");
+
+            if (currentPage.HasValue == false || currentPage.Value < 1)
+            {
+                currentPage = 1;
+            }
+
+            if (currentPage != 0)
+            {
+                query.Append(@"
+OFFSET @Offset ROWS
+FETCH NEXT @PageSize ROWS ONLY");
+            }
+
+            return query;
+        }
+
+        public async Task<(List<ViewInbound>, int?)> GetInboundTransaction(string? gudangCode, DateTime? dateFrom,
+            DateTime? dateTo, int? currentPage)
+        {
+            if (currentPage.HasValue == false || currentPage.Value < 1)
+            {
+                currentPage = 1;
+            }
+
             var query = new StringBuilder();
 
             query.AppendLine(GenerateInitialQuery(true));
             query.AppendLine(GenerateFilterQuery(gudangCode, dateFrom, dateTo));
             query.Append(GenerateGroupbyQuery());
 
+            var pageSize = 10;
+
             var filterQuery = new
             {
                 gudangCode = $@"{gudangCode}",
                 dateFrom = dateFrom?.ToString("yyyy-MM-dd"),
                 dateTo = dateTo?.ToString("yyyy-MM-dd"),
+                Offset = ((currentPage - 1) * 10),
+                PageSize = pageSize,
             };
+
+            query = GenerateOrderQuery(currentPage, query);
 
             var gridData = (await db.Database.GetDbConnection().QueryAsync<ViewInbound>(query.ToString(), filterQuery)).ToList();
 
-            return gridData;
+            return (gridData, currentPage);
         }
 
-        public async Task<List<ViewOutbound>> GetOutboundTransaction(string? gudangCode, DateTime? dateFrom,
-            DateTime? dateTo)
+        public async Task<(List<ViewOutbound>, int?)> GetOutboundTransaction(string? gudangCode, DateTime? dateFrom,
+            DateTime? dateTo, int? currentPage)
         {
+            if (currentPage.HasValue == false || currentPage.Value < 1)
+            {
+                currentPage = 1;
+            }
+
             var query = new StringBuilder();
 
             query.AppendLine(GenerateInitialQuery(false));
             query.AppendLine(GenerateFilterQuery(gudangCode, dateFrom, dateTo));
             query.Append(GenerateGroupbyQuery());
 
+            var pageSize = 10;
+
             var filterQuery = new
             {
                 gudangCode = $@"{gudangCode}",
                 dateFrom = dateFrom?.ToString("yyyy-MM-dd"),
                 dateTo = dateTo?.ToString("yyyy-MM-dd"),
+                Offset = ((currentPage - 1) * 10),
+                PageSize = pageSize,
             };
+
+            query = GenerateOrderQuery(currentPage, query);
 
             var gridData = (await db.Database.GetDbConnection().QueryAsync<ViewOutbound>(query.ToString(), filterQuery)).ToList();
 
-            return gridData;
+            return (gridData, currentPage);
         }
 
         /// <summary>
