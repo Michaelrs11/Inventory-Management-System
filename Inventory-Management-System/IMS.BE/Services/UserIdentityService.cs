@@ -1,4 +1,7 @@
-﻿namespace IMS.BE.Services
+﻿using IMS.BE.Commons.Constants;
+using System.Security.Claims;
+
+namespace IMS.BE.Services
 {
     public class UserIdentityService
     {
@@ -15,6 +18,7 @@
         public string UserCode => _httpContextAccessor.HttpContext
                                             .User
                                             .Claims
+                                            .Where(Q => Q.Type == ClaimType.UserCode)
                                             .Select(Q => Q.Value)
                                             .FirstOrDefault();
     }

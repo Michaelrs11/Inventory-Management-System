@@ -40,7 +40,7 @@ namespace IMS.BE.Pages
 
                 if (claimsPrincipal == null)
                 {
-                    ErrorMessage = "Email or Password invalid";
+                    ErrorMessage = "Username or Password invalid";
 
                     return Page();
                 }

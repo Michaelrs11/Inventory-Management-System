@@ -29,7 +29,7 @@ namespace IMS.BE.Pages.Master
 
         public async Task OnGet()
         {
-            this.OutletCodeDropdown = await this.dropdown.GetOutletDropdownAsync();
+            this.OutletCodeDropdown = await this.dropdown.GetKategoriDropdownAsync();
         }
 
         public async Task<IActionResult> OnPostAsync()
