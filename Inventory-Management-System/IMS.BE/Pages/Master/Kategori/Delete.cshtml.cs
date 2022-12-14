@@ -23,7 +23,7 @@ namespace IMS.BE.Pages.Master.Kategori
 
             if (isValid)
             {
-                return RedirectToPage("/Index");
+                return RedirectToPage("/Welcome");
             }
 
             ErrorMessage = errorMessage;

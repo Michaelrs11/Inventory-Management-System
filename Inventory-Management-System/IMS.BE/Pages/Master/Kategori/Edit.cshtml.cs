@@ -43,7 +43,7 @@ namespace IMS.BE.Pages.Master.Kategori
 
                 await this.categoryService.UpdateAsync(CategoryModel, id);
                 ErrorMessage = string.Empty;
-                return RedirectToPage("/Index");
+                return RedirectToPage("/Welcome");
             }
 
             return Page();

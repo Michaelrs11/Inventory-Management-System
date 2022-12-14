@@ -50,7 +50,7 @@ namespace IMS.BE.Pages
                 }
 
                 await this.registerService.CreateNewUserAsync(RegisterForm);
-                return RedirectToPage("/Index");
+                return RedirectToPage("/Welcome");
             }
             return Page();
         }

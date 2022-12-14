@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
+//builder.Services.AddMvc().AddRazorPagesOptions(options => options.Conventions.AddPageRoute("/Auth/login", ""));
 
 var conf = new ConfigurationBuilder()
                .AddJsonFile("appsettings.json", optional: false)

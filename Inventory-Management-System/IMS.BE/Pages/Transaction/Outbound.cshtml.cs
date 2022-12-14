@@ -43,7 +43,7 @@ namespace IMS.BE.Pages.Transaction
                 if (isSuccess)
                 {
                     ErrorMessage = string.Empty;
-                    return RedirectToPage("/Index");
+                    return RedirectToPage("/Welcome");
                 }
                 else
                 {

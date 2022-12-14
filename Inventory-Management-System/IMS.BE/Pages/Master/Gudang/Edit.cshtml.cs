@@ -51,7 +51,7 @@ namespace IMS.BE.Pages.Master.Gudang
 
                 await this.gudangService.UpdateAsync(GudangModel, id);
                 ErrorMessage = string.Empty;
-                return RedirectToPage("/Index");
+                return RedirectToPage("/Welcome");
             }
 
             return Page();

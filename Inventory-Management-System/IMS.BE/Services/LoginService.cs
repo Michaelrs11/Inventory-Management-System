@@ -31,7 +31,8 @@ namespace IMS.BE.Services
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.UserCode)
+                new Claim(ClaimTypes.Email, user.UserCode),
+                new Claim(ClaimTypes.Name, user.Name)
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, authScheme);

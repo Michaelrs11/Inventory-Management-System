@@ -57,7 +57,7 @@ namespace IMS.BE.Pages
 
                 ErrorMessage = string.Empty;
 
-                return Redirect("/Index");
+                return Redirect("/Welcome");
             } 
 
             return Page();

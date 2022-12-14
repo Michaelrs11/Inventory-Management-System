@@ -40,7 +40,7 @@ namespace IMS.BE.Pages.Transaction
             if (ModelState.IsValid)
             {
                 await this.service.InsertInbound(InboundData);
-                return RedirectToPage("/Index");
+                return RedirectToPage("/Welcome");
             }
 
             return Page();

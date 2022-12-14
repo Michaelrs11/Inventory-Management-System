@@ -50,7 +50,7 @@ namespace IMS.BE.Pages.Master
 
                 await this.barangService.UpdateAsync(BarangModel, id);
                 ErrorMessage = string.Empty;
-                return RedirectToPage("/Index");
+                return RedirectToPage("/Welcome");
             }
 
             return Page();
