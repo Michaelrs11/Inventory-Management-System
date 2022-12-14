@@ -6,9 +6,8 @@ namespace IMS.BE.Models
 {
     public class ChangePassword
     {
-
+        [Display(Name = "UserCode", Prompt = "User Code")]
         public string? UserCode { get; set; } = string.Empty;
-        [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Password", Prompt = "Old Password")]
         public string OldPassword { get; set; } = string.Empty;

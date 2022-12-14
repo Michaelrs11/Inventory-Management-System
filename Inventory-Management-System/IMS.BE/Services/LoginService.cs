@@ -80,13 +80,6 @@ namespace IMS.BE.Services
                     return false;
                 }
 
-                var isPasswordValid = this.VerifyPassword(user, change.OldPassword);
-
-                if (!isPasswordValid)
-                {
-                    return false;
-                }
-
                 user!.Password = BCrypt.Net.BCrypt.HashPassword(change.NewPassword);
                 user.UpdatedBy = change.UserCode.ToUpper();
                 user.UpdatedAt = DateTimeOffset.UtcNow;

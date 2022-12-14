@@ -1,21 +1,18 @@
 using IMS.BE.Models;
 using IMS.BE.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace IMS.BE.Pages.Auth
 {
-    [Authorize]
-    public class ChangePassModel : PageModel
+    public class ForgotPassModel : PageModel
     {
         private readonly LoginService service;
 
-        public ChangePassModel(LoginService service)
+        public ForgotPassModel(LoginService service)
         {
             this.service = service;
         }
-
         [BindProperty]
         public ChangePassword ChangePassForm { get; set; }
         [TempData]
@@ -26,14 +23,14 @@ namespace IMS.BE.Pages.Auth
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (string.IsNullOrEmpty(ChangePassForm.OldPassword))
+            if (string.IsNullOrEmpty(ChangePassForm.UserCode))
             {
-                ErrorMessage = "Old Password harus diisi";
+                ErrorMessage = "User code harus diisi";
                 return Page();
             }
             if (ModelState.IsValid)
             {
-                var isValid = await this.service.ChangePasswordAsync(false, ChangePassForm);
+                var isValid = await this.service.ChangePasswordAsync(true, ChangePassForm);
                 if (!isValid)
                 {
                     ErrorMessage = "Old Password Invalid";
