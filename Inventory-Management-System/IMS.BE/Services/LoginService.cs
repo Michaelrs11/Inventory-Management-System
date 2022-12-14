@@ -29,9 +29,15 @@ namespace IMS.BE.Services
                 return null;
             }
 
+            var userRole = await (from mu in this.db.MasterUsers
+                                  join ure in this.db.UserRoleEnums on mu.UserRoleEnumId equals ure.UserRoleEnumId
+                                  where mu.UserCode.ToLower() == userCode.ToLower()
+                                  select ure.Name)
+                                  .FirstOrDefaultAsync();
+
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Email, user.UserCode),
+                new Claim(ClaimTypes.Role, userRole!),
                 new Claim(ClaimTypes.Name, user.Name)
             };
 
