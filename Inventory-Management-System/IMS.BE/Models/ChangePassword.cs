@@ -19,7 +19,7 @@ namespace IMS.BE.Models
         [Required]
         [DataType(DataType.Password)]
         [Compare(nameof(NewPassword), ErrorMessage = "Password and Confirmation Password tidak sama")]
-        [Display(Name = "Password", Prompt = "Password")]
+        [Display(Name = "Password", Prompt = "Confirm Password")]
         public string ConfirmPassword { get; set; } = string.Empty;
     }
 }
