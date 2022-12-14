@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml.Spreadsheet;
 using IMS.BE.Commons.Constants;
 using IMS.BE.Commons.Services;
 using IMS.BE.Services;
@@ -10,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
-//builder.Services.AddMvc().AddRazorPagesOptions(options => options.Conventions.AddPageRoute("/Auth/login", ""));
+builder.Services.AddMvc().AddRazorPagesOptions(options => options.Conventions.AddPageRoute("/Welcome", ""));
 
 var conf = new ConfigurationBuilder()
                .AddJsonFile("appsettings.json", optional: false)
@@ -21,6 +22,7 @@ builder.Services.AddAuthentication(Clients.WebApp)
                .AddCookie(Clients.WebApp, options =>
                {
                    options.LoginPath = "/Auth/login";
+                   options.LogoutPath = "/Auth/logout";
                    options.ExpireTimeSpan = TimeSpan.FromHours(1);
                });
 
