@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+
+#nullable disable
 
 namespace IMS.Entities
 {
@@ -12,19 +13,19 @@ namespace IMS.Entities
         {
         }
 
-        public virtual DbSet<MasterBarang> MasterBarangs { get; set; } = null!;
-        public virtual DbSet<MasterGudang> MasterGudangs { get; set; } = null!;
-        public virtual DbSet<MasterKategori> MasterKategoris { get; set; } = null!;
-        public virtual DbSet<MasterUser> MasterUsers { get; set; } = null!;
-        public virtual DbSet<Outlet> Outlets { get; set; } = null!;
-        public virtual DbSet<StockTransaction> StockTransactions { get; set; } = null!;
-        public virtual DbSet<UserRoleEnum> UserRoleEnums { get; set; } = null!;
+        public virtual DbSet<MasterBarang> MasterBarangs { get; set; }
+        public virtual DbSet<MasterGudang> MasterGudangs { get; set; }
+        public virtual DbSet<MasterKategori> MasterKategoris { get; set; }
+        public virtual DbSet<MasterUser> MasterUsers { get; set; }
+        public virtual DbSet<Outlet> Outlets { get; set; }
+        public virtual DbSet<StockTransaction> StockTransactions { get; set; }
+        public virtual DbSet<UserRoleEnum> UserRoleEnums { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=.;Database=Inventory_Management_System;Trusted_Connection=True;");
+                optionsBuilder.UseMySQL("Server=ftp.leebongisland.com;Port=3306;Database=ariesch_pbidn11111;Uid=ariesch_pbidn11111;Pwd=fGSGVFZFmV22wy@;");
             }
         }
 
@@ -32,230 +33,252 @@ namespace IMS.Entities
         {
             modelBuilder.Entity<MasterBarang>(entity =>
             {
-                entity.HasKey(e => e.SKUID);
+                entity.HasKey(e => e.SKUID)
+                    .HasName("PRIMARY");
 
                 entity.ToTable("MasterBarang");
 
-                entity.Property(e => e.SKUID)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.HasIndex(e => e.KategoriCode, "KategoriCode");
 
-                entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+                entity.Property(e => e.SKUID).HasMaxLength(255);
+
+                entity.Property(e => e.CreatedAt).HasDefaultValueSql("'current_timestamp()'");
 
                 entity.Property(e => e.CreatedBy)
+                    .IsRequired()
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("('SYSTEM')");
+                    .HasDefaultValueSql("'''SYSTEM'''");
 
                 entity.Property(e => e.KategoriCode)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                    .IsRequired()
+                    .HasMaxLength(255);
 
                 entity.Property(e => e.Name)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                    .IsRequired()
+                    .HasMaxLength(255);
 
-                entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+                entity.Property(e => e.UpdatedAt).HasDefaultValueSql("'current_timestamp()'");
 
                 entity.Property(e => e.UpdatedBy)
+                    .IsRequired()
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("('SYSTEM')");
+                    .HasDefaultValueSql("'''SYSTEM'''");
 
                 entity.HasOne(d => d.KategoriCodeNavigation)
                     .WithMany(p => p.MasterBarangs)
                     .HasForeignKey(d => d.KategoriCode)
-                    .HasConstraintName("FK_MasterBarang_MasterKategori");
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("MasterBarang_ibfk_1");
             });
 
             modelBuilder.Entity<MasterGudang>(entity =>
             {
                 entity.HasKey(e => e.GudangCode)
-                    .HasName("PK_GudangCode");
+                    .HasName("PRIMARY");
 
                 entity.ToTable("MasterGudang");
 
-                entity.Property(e => e.GudangCode)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.HasIndex(e => e.OutletCode, "OutletCode");
 
-                entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+                entity.Property(e => e.GudangCode).HasMaxLength(255);
+
+                entity.Property(e => e.CreatedAt).HasDefaultValueSql("'current_timestamp()'");
 
                 entity.Property(e => e.CreatedBy)
+                    .IsRequired()
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("('SYSTEM')");
+                    .HasDefaultValueSql("'''SYSTEM'''");
 
                 entity.Property(e => e.Name)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                    .IsRequired()
+                    .HasMaxLength(255);
 
                 entity.Property(e => e.OutletCode)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                    .IsRequired()
+                    .HasMaxLength(255);
 
-                entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+                entity.Property(e => e.UpdatedAt).HasDefaultValueSql("'current_timestamp()'");
 
                 entity.Property(e => e.UpdatedBy)
+                    .IsRequired()
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("('SYSTEM')");
+                    .HasDefaultValueSql("'''SYSTEM'''");
 
                 entity.HasOne(d => d.OutletCodeNavigation)
                     .WithMany(p => p.MasterGudangs)
                     .HasForeignKey(d => d.OutletCode)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_MasterGudang_Outlet");
+                    .HasConstraintName("MasterGudang_ibfk_1");
             });
 
             modelBuilder.Entity<MasterKategori>(entity =>
             {
-                entity.HasKey(e => e.KategoriCode);
+                entity.HasKey(e => e.KategoriCode)
+                    .HasName("PRIMARY");
 
                 entity.ToTable("MasterKategori");
 
-                entity.Property(e => e.KategoriCode)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.KategoriCode).HasMaxLength(255);
 
-                entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+                entity.Property(e => e.CreatedAt).HasDefaultValueSql("'current_timestamp()'");
 
                 entity.Property(e => e.CreatedBy)
+                    .IsRequired()
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("('SYSTEM')");
+                    .HasDefaultValueSql("'''SYSTEM'''");
 
                 entity.Property(e => e.Name)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                    .IsRequired()
+                    .HasMaxLength(255);
 
-                entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+                entity.Property(e => e.UpdatedAt).HasDefaultValueSql("'current_timestamp()'");
 
                 entity.Property(e => e.UpdatedBy)
+                    .IsRequired()
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("('SYSTEM')");
+                    .HasDefaultValueSql("'''SYSTEM'''");
             });
 
             modelBuilder.Entity<MasterUser>(entity =>
             {
                 entity.HasKey(e => e.UserCode)
-                    .HasName("PK_User");
+                    .HasName("PRIMARY");
 
                 entity.ToTable("MasterUser");
 
-                entity.Property(e => e.UserCode)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.HasIndex(e => e.UserRoleEnumId, "UserRoleEnumId");
 
-                entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+                entity.Property(e => e.UserCode).HasMaxLength(255);
+
+                entity.Property(e => e.CreatedAt).HasDefaultValueSql("'current_timestamp()'");
 
                 entity.Property(e => e.CreatedBy)
+                    .IsRequired()
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("('SYSTEM')");
+                    .HasDefaultValueSql("'''SYSTEM'''");
 
                 entity.Property(e => e.Email)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                    .IsRequired()
+                    .HasMaxLength(255);
 
                 entity.Property(e => e.Name)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                    .IsRequired()
+                    .HasMaxLength(255);
 
                 entity.Property(e => e.Password)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                    .IsRequired()
+                    .HasMaxLength(255);
 
-                entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+                entity.Property(e => e.UpdatedAt).HasDefaultValueSql("'current_timestamp()'");
 
                 entity.Property(e => e.UpdatedBy)
+                    .IsRequired()
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("('SYSTEM')");
+                    .HasDefaultValueSql("'''SYSTEM'''");
+
+                entity.Property(e => e.UserRoleEnumId).HasColumnType("int(11)");
 
                 entity.HasOne(d => d.UserRoleEnum)
                     .WithMany(p => p.MasterUsers)
                     .HasForeignKey(d => d.UserRoleEnumId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_User_UserRoleEnum");
+                    .HasConstraintName("MasterUser_ibfk_1");
             });
 
             modelBuilder.Entity<Outlet>(entity =>
             {
-                entity.HasKey(e => e.OutletCode);
+                entity.HasKey(e => e.OutletCode)
+                    .HasName("PRIMARY");
 
                 entity.ToTable("Outlet");
 
-                entity.Property(e => e.OutletCode)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.OutletCode).HasMaxLength(255);
 
-                entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+                entity.Property(e => e.CreatedAt).HasDefaultValueSql("'current_timestamp()'");
 
                 entity.Property(e => e.CreatedBy)
+                    .IsRequired()
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("('SYSTEM')");
+                    .HasDefaultValueSql("'''SYSTEM'''");
 
                 entity.Property(e => e.Name)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                    .IsRequired()
+                    .HasMaxLength(255);
 
-                entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+                entity.Property(e => e.UpdatedAt).HasDefaultValueSql("'current_timestamp()'");
 
                 entity.Property(e => e.UpdatedBy)
+                    .IsRequired()
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("('SYSTEM')");
+                    .HasDefaultValueSql("'''SYSTEM'''");
             });
 
             modelBuilder.Entity<StockTransaction>(entity =>
             {
                 entity.ToTable("StockTransaction");
 
-                entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+                entity.HasIndex(e => e.GudangCode, "GudangCode");
+
+                entity.HasIndex(e => e.SKUID, "SKUID");
+
+                entity.Property(e => e.StockTransactionId).HasColumnType("int(11)");
+
+                entity.Property(e => e.CreatedAt).HasDefaultValueSql("'current_timestamp()'");
 
                 entity.Property(e => e.CreatedBy)
+                    .IsRequired()
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("('SYSTEM')");
+                    .HasDefaultValueSql("'''SYSTEM'''");
 
                 entity.Property(e => e.GudangCode)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                    .IsRequired()
+                    .HasMaxLength(255);
 
                 entity.Property(e => e.SKUID)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                    .IsRequired()
+                    .HasMaxLength(255);
 
-                entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+                entity.Property(e => e.StockAfter).HasColumnType("int(11)");
+
+                entity.Property(e => e.StockBefore).HasColumnType("int(11)");
+
+                entity.Property(e => e.StockIn)
+                    .HasColumnType("int(11)")
+                    .HasDefaultValueSql("'NULL'");
+
+                entity.Property(e => e.StockOut)
+                    .HasColumnType("int(11)")
+                    .HasDefaultValueSql("'NULL'");
+
+                entity.Property(e => e.UpdatedAt).HasDefaultValueSql("'current_timestamp()'");
 
                 entity.Property(e => e.UpdatedBy)
+                    .IsRequired()
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("('SYSTEM')");
+                    .HasDefaultValueSql("'''SYSTEM'''");
 
                 entity.HasOne(d => d.GudangCodeNavigation)
                     .WithMany(p => p.StockTransactions)
                     .HasForeignKey(d => d.GudangCode)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_StockTransaction_MasterGudang");
+                    .HasConstraintName("StockTransaction_ibfk_2");
 
                 entity.HasOne(d => d.SKU)
                     .WithMany(p => p.StockTransactions)
                     .HasForeignKey(d => d.SKUID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_AdjustmentStock_MasterBarang");
+                    .HasConstraintName("StockTransaction_ibfk_1");
             });
 
             modelBuilder.Entity<UserRoleEnum>(entity =>
             {
                 entity.ToTable("UserRoleEnum");
 
+                entity.Property(e => e.UserRoleEnumId).HasColumnType("int(11)");
+
                 entity.Property(e => e.Name)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                    .IsRequired()
+                    .HasMaxLength(255);
             });
 
             OnModelCreatingPartial(modelBuilder);

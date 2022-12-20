@@ -11,7 +11,7 @@ namespace IMS.Entities
         }
 
         public int UserRoleEnumId { get; set; }
-        public string Name { get; set; } = null!;
+        public string Name { get; set; }
 
         public virtual ICollection<MasterUser> MasterUsers { get; set; }
     }

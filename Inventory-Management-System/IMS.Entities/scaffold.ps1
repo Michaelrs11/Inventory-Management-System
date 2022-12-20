@@ -1,5 +1,5 @@
-﻿$connectionString = "Server=.;Database=Inventory_Management_System;Trusted_Connection=True;";
-$provider = "Microsoft.EntityFrameworkCore.SqlServer";
+﻿$connectionString = "Server=ftp.leebongisland.com;Port=3306;Database=ariesch_pbidn11111;Uid=ariesch_pbidn11111;Pwd=fGSGVFZFmV22wy@;";
+$provider = "MySql.EntityFrameworkCore";
 $dbContextName = "IMSDBContext";
 
 Remove-Item *.cs;
